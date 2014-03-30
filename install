@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+
+"""
+Create symlinks on the parent directory.
+"""
+
+import os
+import shutil
+
+skip_message = ': already exists. Skipping.'
+symlinks = ['.gitignore', 'Makefile']
+
+root, boilerplate_dir = os.path.split(os.getcwd())
+for basename in symlinks:
+    name = os.path.join(root, basename)
+    source = os.path.join(boilerplate_dir, basename)
+    if os.path.lexists(name):
+        print basename + skip_message
+    else:
+        print basename
+        os.symlink(source, name)
+print '\n`git add` symlinks you want to keep.'
