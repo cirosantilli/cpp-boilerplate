@@ -1,10 +1,8 @@
-# Compile all files with extension IN_EXT in directory IN_DIR into or into a single output file.
-# IN_EXT can be either of: `.cpp`, `.c` or `.f`. The compiler is chosen accordingly.
+# `make help` for documentation.
 
 -include Makefile_params
 
-# Basename of the file to generate assembly code for:
-ASSEMBLE_BASENAME 		?= a.c
+# Basename without extension of the file to generate assembly code for:
 AUX_DIR 				?= _aux/
 AUX_EXT 				?= .o
 FF						?= gfortran
@@ -26,6 +24,7 @@ RUN_ARGS 				?= #0 1
 OPTIMIZE_FLAGS			?= -O3
 OUT_DIR 				?= ./
 OUT_BASENAME_NOEXT		?= main
+RUN						?= $(OUT_BASENAME_NOEXT)
 OUT_EXT 				?=
 PROFILE_DEFINE 			?=
 PROFILE_FLAGS 			?=
@@ -34,11 +33,10 @@ INS 		:= $(wildcard $(IN_DIR)*$(IN_EXT))
 INS_NODIR 	:= $(notdir $(INS))
 AUXS_NODIR	:= $(INS_NODIR:$(IN_EXT)=$(AUX_EXT))
 AUXS		:= $(addprefix $(AUX_DIR),$(AUXS_NODIR))
-
 OUT_BASENAME:= $(OUT_BASENAME_NOEXT)$(OUT_EXT)
 OUT			:= $(OUT_DIR)$(OUT_BASENAME)
 
-.PHONY: all mkdir clean assembler debug set_debug_flags profile set_profile_flags help ubuntu_install_deps
+.PHONY: all mkdir clean assembler debug set_debug_flags help profile set_profile_flags test
 
 all: mkdir $(OUT)
 
@@ -54,9 +52,9 @@ $(AUX_DIR)%$(AUX_EXT): $(IN_DIR)%.cpp
 $(AUX_DIR)%$(AUX_EXT): $(IN_DIR)%.f
 	$(FF) $(DEFINES) $(DEBUG_DEFINE) $(DEBUG_FLAGS) $(PROFILE_DEFINE) $(PROFILE_FLAGS) $(OPTIMIZE_FLAGS) $(PREDEF) $(INCLUDE_DIRS) $(CFLAGS) -c "$<" -o "$@"
 
-asm: mkdir $(IN_DIR)$(ASSEMBLER_BASENAME)
+asm: mkdir
 	$(eval OPTIMIZE_FLAGS := -O0)
-	$(MYCC) $(PROFILE_DEFINE) $(PROFILE_FLAGS) $(DEBUG_DEFINE) $(DEBUG_FLAGS) $(OPTIMIZE_FLAGS) $(CFLAGS) -S "$(IN_DIR)$(ASSEMBLE_BASENAME)" -o "$(OUT_DIR)$(ASSEMBLE_BASENAME).s"
+	$(MYCC) $(PROFILE_DEFINE) $(PROFILE_FLAGS) $(DEBUG_DEFINE) $(DEBUG_FLAGS) $(OPTIMIZE_FLAGS) $(CFLAGS) -fverbose-asm -Wa,-adhln "$(IN_DIR)$(RUN)$(IN_EXT)" $(LIBS) -o $(AUX_DIR)asm$(AUX_EXT)\
 
 clean:
 	rm -rf "$(AUX_DIR)" "$(OUT)"
@@ -65,8 +63,7 @@ debug: clean set_debug_flags all
 	gdb $(OUT)
 
 mkdir:
-	mkdir -p "$(AUX_DIR)"
-	mkdir -p "$(OUT_DIR)"
+	mkdir -p "$(AUX_DIR)" "$(OUT_DIR)"
 
 profile: clean set_profile_flags all run
 	mv -f gmon.out "$(OUT_DIR)"
@@ -85,4 +82,32 @@ set_profile_flags:
 run: all
 	cd $(OUT_DIR) && ./$(OUT_BASENAME) $(RUN_ARGS)
 
+test: all
+	./test $(OUT_DIR) $(OUT_BASENAME)
+
 -include Makefile_targets
+
+help:
+	@echo 'Compile all files with extension IN_EXT in directory IN_DIR into or into a single output file.'
+	@echo 'IN_EXT can be either of: `.cpp`, `.c` or `.f`. The compiler is chosen accordingly.'
+	@echo ''
+	@echo '# Most useful invocations'
+	@echo ''
+	@echo 'Build:'
+	@echo ''
+	@echo '    make'
+	@echo ''
+	@echo 'Build and run output:'
+	@echo ''
+	@echo '    make run'
+	@echo ''
+	@echo '# Targets'
+	@echo ''
+	@echo 'all ................. Build all.'
+	@echo 'asm [RUN=name] ...... BROKEN Print generated assembly code for the file with given basename without extension.'
+	@echo 'clean ............... Clean built files.'
+	@echo 'debug ............... Run with `gdb`.'
+	@echo 'help ................ Print help to stdout.'
+	@echo 'profile ............. Run with `gprof`.'
+	@echo 'run ................. Run a file with the given basename or the default not given.'
+	@echo 'test ................ Run `./test <output-directory> <output-basename>`'

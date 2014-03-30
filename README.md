@@ -2,6 +2,31 @@ C, C++ and Fortran boilerplate to factor code across multiple projects.
 
 For a template which already has this installed as submodule use: <https://github.com/cirosantilli/cpp-template>.
 
+# Usage from main project
+
+Clone the main project with the `--recursive` flag:
+
+    git clone --recursive https://github.com/USER/RESPOSITORY.git
+
+If you forgot to use `--recursive` when cloning do:
+
+    git submodule init
+    git submodule update
+
+List all commands with:
+
+    make help
+
+Automatic install of binary dependencies may be available on each project through targets of type:
+
+    make install-ubuntu
+
+Compile and run with:
+
+    make run
+
+# Install
+
 Install on an existing project with:
 
     git submodule add https://github.com/cirosantilli/latex-submodule shared
