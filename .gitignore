@@ -1,4 +1,4 @@
-# Output files: bins/.so/.a
+# Final output files: executables, .so, .a
 _out/
 
 # Intermediate compilation files: .o
@@ -27,3 +27,6 @@ build/
 
 # Temporary files
 *.tmp
+
+.vagrant
+Vagrantfile_local.rb

@@ -25,6 +25,14 @@ Compile and run with:
 
     make run
 
+Run tests with:
+
+    make test
+
+Clean up generated files with:
+
+    make clean
+
 # Install
 
 Install on an existing project with:

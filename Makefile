@@ -3,8 +3,8 @@
 -include Makefile_params
 
 # Basename without extension of the file to generate assembly code for:
-AUX_DIR 				?= _aux/
-AUX_EXT 				?= .o
+TMP_DIR 				?= _tmp/
+TMP_EXT 				?= .o
 FF						?= gfortran
 DEBUG_DEFINE 			?=
 DEBUG_FLAGS 			?=
@@ -31,8 +31,8 @@ PROFILE_FLAGS 			?=
 
 INS 		:= $(wildcard $(IN_DIR)*$(IN_EXT))
 INS_NODIR 	:= $(notdir $(INS))
-AUXS_NODIR	:= $(INS_NODIR:$(IN_EXT)=$(AUX_EXT))
-AUXS		:= $(addprefix $(AUX_DIR),$(AUXS_NODIR))
+TMPS_NODIR	:= $(INS_NODIR:$(IN_EXT)=$(TMP_EXT))
+TMPS		:= $(addprefix $(TMP_DIR),$(TMPS_NODIR))
 OUT_BASENAME:= $(OUT_BASENAME_NOEXT)$(OUT_EXT)
 OUT			:= $(OUT_DIR)$(OUT_BASENAME)
 
@@ -40,30 +40,30 @@ OUT			:= $(OUT_DIR)$(OUT_BASENAME)
 
 all: mkdir $(OUT)
 
-$(OUT): $(AUXS)
+$(OUT): $(TMPS)
 	$(MYCXX) $(PROFILE_FLAGS) $^ -o "$@" $(LIBS)
 
-$(AUX_DIR)%$(AUX_EXT): $(IN_DIR)%.c
+$(TMP_DIR)%$(TMP_EXT): $(IN_DIR)%.c
 	$(MYCC) $(DEFINES) $(DEBUG_DEFINE) $(DEBUG_FLAGS) $(PROFILE_DEFINE) $(PROFILE_FLAGS) $(OPTIMIZE_FLAGS) $(PREDEF) $(INCLUDE_DIRS) $(MYCFLAGS) -c "$<" -o "$@"
 
-$(AUX_DIR)%$(AUX_EXT): $(IN_DIR)%.cpp
+$(TMP_DIR)%$(TMP_EXT): $(IN_DIR)%.cpp
 	$(MYCXX) $(DEFINES) $(DEBUG_DEFINE) $(DEBUG_FLAGS) $(PROFILE_DEFINE) $(PROFILE_FLAGS) $(OPTIMIZE_FLAGS) $(PREDEF) $(INCLUDE_DIRS) $(MYCXXFLAGS) -c "$<" -o "$@"
 
-$(AUX_DIR)%$(AUX_EXT): $(IN_DIR)%.f
+$(TMP_DIR)%$(TMP_EXT): $(IN_DIR)%.f
 	$(FF) $(DEFINES) $(DEBUG_DEFINE) $(DEBUG_FLAGS) $(PROFILE_DEFINE) $(PROFILE_FLAGS) $(OPTIMIZE_FLAGS) $(PREDEF) $(INCLUDE_DIRS) $(CFLAGS) -c "$<" -o "$@"
 
 asm: mkdir
 	$(eval OPTIMIZE_FLAGS := -O0)
-	$(MYCC) $(PROFILE_DEFINE) $(PROFILE_FLAGS) $(DEBUG_DEFINE) $(DEBUG_FLAGS) $(OPTIMIZE_FLAGS) $(CFLAGS) -fverbose-asm -Wa,-adhln "$(IN_DIR)$(RUN)$(IN_EXT)" $(LIBS) -o $(AUX_DIR)asm$(AUX_EXT)\
+	$(MYCC) $(PROFILE_DEFINE) $(PROFILE_FLAGS) $(DEBUG_DEFINE) $(DEBUG_FLAGS) $(OPTIMIZE_FLAGS) $(CFLAGS) -fverbose-asm -Wa,-adhln "$(IN_DIR)$(RUN)$(IN_EXT)" $(LIBS) -o $(TMP_DIR)asm$(TMP_EXT)\
 
 clean:
-	rm -rf "$(AUX_DIR)" "$(OUT)"
+	rm -rf "$(TMP_DIR)" "$(OUT)"
 
 debug: clean set_debug_flags all
 	gdb $(OUT)
 
 mkdir:
-	mkdir -p "$(AUX_DIR)" "$(OUT_DIR)"
+	mkdir -p "$(TMP_DIR)" "$(OUT_DIR)"
 
 profile: clean set_profile_flags all run
 	mv -f gmon.out "$(OUT_DIR)"
