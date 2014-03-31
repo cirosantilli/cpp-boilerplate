@@ -17,9 +17,9 @@ List all commands with:
 
     make help
 
-Automatic install of binary dependencies may be available on each project through targets of type:
+Automatic install of dependencies may be available on each project through targets of type:
 
-    make install-ubuntu
+    make deps
 
 Compile and run with:
 

@@ -37,5 +37,5 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--ioapic", "on"]
     end
   end
-  config.vm.provision :shell, privileged: false, path: 'provision.sh'
+  #config.vm.provision :shell, privileged: false, path: 'provision.sh'
 end
