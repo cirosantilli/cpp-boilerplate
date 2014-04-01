@@ -54,7 +54,7 @@ $(TMP_DIR)%$(TMP_EXT): $(IN_DIR)%.f
 
 asm: mkdir
 	$(eval OPTIMIZE_FLAGS := -O0)
-	$(MYCC) $(PROFILE_DEFINE) $(PROFILE_FLAGS) $(DEBUG_DEFINE) $(DEBUG_FLAGS) $(OPTIMIZE_FLAGS) $(CFLAGS) -fverbose-asm -Wa,-adhln "$(IN_DIR)$(RUN)$(IN_EXT)" $(LIBS) -o $(TMP_DIR)asm$(TMP_EXT)\
+	$(MYCC) $(PROFILE_DEFINE) $(PROFILE_FLAGS) $(DEBUG_DEFINE) $(DEBUG_FLAGS) $(OPTIMIZE_FLAGS) $(CFLAGS) -fverbose-asm -Wa,-adhln "$(IN_DIR)$(RUN)$(IN_EXT)" $(LIBS) -o $(TMP_DIR)asm$(TMP_EXT)
 
 clean:
 	rm -rf "$(TMP_DIR)" "$(OUT)"
@@ -83,7 +83,7 @@ run: all
 	cd $(OUT_DIR) && ./$(OUT_BASENAME) $(RUN_ARGS)
 
 test: all
-	./test $(OUT_DIR) $(OUT_BASENAME)
+	if [ -x test ]; then ./test $(OUT_DIR) $(OUT_BASENAME); else $(MAKE) run && echo 'All tests passed.'; fi
 
 -include Makefile_targets
 
@@ -110,4 +110,4 @@ help:
 	@echo 'help ................ Print help to stdout.'
 	@echo 'profile ............. Run with `gprof`.'
 	@echo 'run ................. Run a file with the given basename or the default not given.'
-	@echo 'test ................ Run `./test <output-directory> <output-basename>`'
+	@echo 'test ................ If `test` exists, run `./test <output-directory> <output-basename>`. Else check exit status == 0.'
