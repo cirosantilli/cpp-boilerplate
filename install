@@ -8,7 +8,7 @@ import os
 import shutil
 
 skip_message = ': already exists. Skipping.'
-symlinks = ['.gitignore', 'Makefile', 'Vagrantfile']
+symlinks = ['.gitignore', '.vimrc', 'Makefile', 'Vagrantfile']
 
 root, boilerplate_dir = os.path.split(os.getcwd())
 for basename in symlinks:

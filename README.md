@@ -55,6 +55,15 @@ The configuration files are:
 
 All configuration options are documented in the configuration file templates at: <https://github.com/cirosantilli/cpp-template>
 
+#Vim
+
+The `.vimrc` offers the following mappings:
+
+- `<F5>`: `make`
+- `<F6>`: `make run`
+
+We recommend that you use a plug-in that auto sources that file such as: <https://github.com/MarcWeber/vim-addon-local-vimrc>
+
 #Install
 
 Install on an existing project with:
