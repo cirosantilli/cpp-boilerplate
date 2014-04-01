@@ -1,8 +1,10 @@
-C, C++ and Fortran boilerplate to factor code across multiple projects.
+C, C++ and Fortran boilerplate.
 
 For a template which already has this installed as submodule use: <https://github.com/cirosantilli/cpp-template>.
 
-# Usage from main project
+Intended usage: include as a submodule, and symlink into files you want to use, which can be automated with `./install`. See [Install](#install) for more details.
+
+#Usage from main project
 
 Clone the main project with the `--recursive` flag:
 
@@ -17,9 +19,15 @@ List all commands with:
 
     make help
 
-Automatic install of dependencies may be available on each project through targets of type:
+Automatic install of dependencies is available for certain systems with:
 
-    make deps
+    ./configure
+
+If this is not the case for you system, the command will inform you which dependencies are needed.
+
+If automatic install is not available for your system, you may want to run on a VirtualBox Vagrant virtual machine with:
+
+    vagrant up
 
 Compile and run with:
 
@@ -33,7 +41,21 @@ Clean up generated files with:
 
     make clean
 
-# Install
+#Configure
+
+There are many configuration options which can be set on a per project basis with configuration files without altering boilerplate files.
+
+Those files are not included in the boilerplate because they are meant to be modified.
+
+The configuration files are:
+
+- `Makefile_params`
+- `Makefile_targets`
+- `Vagrantfile_params`
+
+All configuration options are documented in the configuration file templates at: <https://github.com/cirosantilli/cpp-template>
+
+#Install
 
 Install on an existing project with:
 
@@ -41,18 +63,9 @@ Install on an existing project with:
     cd `shared`
     ./install
 
-This generates two kinds of files:
+This generates two kinds of files symlinks from the main repository to this submodule, e.g.:
 
-- symlinks which you are unlikely to modify, e.g.:
+    Makefile -> boilerplate/Makefile_one
+    .gitignore -> boilerplate/.gitignore
 
-        Makefile -> boilerplate/Makefile_one
-        .gitignore -> boilerplate/.gitignore
-
-    Those files can be customized through external configuration files, e.g. `Makefile_params` and configures `Makefile`.
-
-- regular file templates which your are likely to modify:
-
-    - `Makefile_params`
-    - `Makefile_targets`
-
-`git add` all the generated files you want to keep.
+Your existing files won't be overwritten.

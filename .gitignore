@@ -29,4 +29,3 @@ build/
 *.tmp
 
 .vagrant
-Vagrantfile_local.rb

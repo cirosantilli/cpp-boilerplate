@@ -11,7 +11,8 @@ memory = '512'
 # WARNING: if you are going to run a 64 bit guest inside a 32 bit host
 # you must enable hardware virtualization from your BIOS
 begin
-  require_relative('Vagrantfile_local')
+  # Must use the pwd otherwise Vagrant goes into the boilerplate directory.
+  require_relative(File.join(Dir.pwd,'Vagrantfile_params'))
   box = Box
   box_url = BoxUrl
   hostname = Hostname
@@ -37,5 +38,6 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--ioapic", "on"]
     end
   end
-  #config.vm.provision :shell, privileged: false, path: 'provision.sh'
+  config.vm.provision :shell, path: 'configure'
+  config.vm.provision :shell, privileged: false, inline: 'echo cd "/vagrant" >> ~/.bashrc'
 end

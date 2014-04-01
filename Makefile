@@ -36,7 +36,7 @@ TMPS		:= $(addprefix $(TMP_DIR),$(TMPS_NODIR))
 OUT_BASENAME:= $(OUT_BASENAME_NOEXT)$(OUT_EXT)
 OUT			:= $(OUT_DIR)$(OUT_BASENAME)
 
-.PHONY: all assembler clean deps debug set_debug_flags help mkdir profile set_profile_flags test
+.PHONY: all assembler clean debug set_debug_flags help mkdir profile set_profile_flags test
 
 all: mkdir $(OUT)
 
