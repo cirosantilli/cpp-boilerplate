@@ -2,9 +2,6 @@
 
 -include Makefile_params
 
-# Basename without extension of the file to generate assembly code for:
-TMP_DIR 				?= _tmp/
-TMP_EXT 				?= .o
 FF						?= gfortran
 DEBUG_DEFINE 			?=
 DEBUG_FLAGS 			?=
@@ -18,9 +15,6 @@ MYCC					?= gcc
 MYCFLAGS				?= -std=c11   -Wall -pedantic-errors -march=native $(CFLAGS_EXTRA)
 MYCXX					?= g++
 MYCXXFLAGS				?= -std=c++11 -Wall -pedantic-errors -march=native $(CXXFLAGS_EXTRA)
-PREDEF 					?= #-DDEBUG -DPROFILE -DWINDOWS
-# Passed as command line args to bin on run.
-RUN_ARGS 				?= #0 1
 OPTIMIZE_FLAGS			?= -O3
 OUT_DIR 				?= ./
 OUT_BASENAME_NOEXT		?= main
@@ -28,6 +22,12 @@ RUN						?= $(OUT_BASENAME_NOEXT)
 OUT_EXT 				?=
 PROFILE_DEFINE 			?=
 PROFILE_FLAGS 			?=
+PREDEF 					?= #-DDEBUG -DPROFILE -DWINDOWS
+# Passed as command line args to bin on run.
+RUN_ARGS 				?= #0 1
+# Basename without extension of the file to generate assembly code for:
+TMP_DIR 				?= _build/
+TMP_EXT 				?= .o
 
 INS 		:= $(wildcard $(IN_DIR)*$(IN_EXT))
 INS_NODIR 	:= $(notdir $(INS))
@@ -36,9 +36,11 @@ TMPS		:= $(addprefix $(TMP_DIR),$(TMPS_NODIR))
 OUT_BASENAME:= $(OUT_BASENAME_NOEXT)$(OUT_EXT)
 OUT			:= $(OUT_DIR)$(OUT_BASENAME)
 
-.PHONY: all assembler clean debug set_debug_flags help mkdir profile set_profile_flags test
+.PHONY: all all-post assembler clean debug set_debug_flags help mkdir profile set_profile_flags test
 
 all: mkdir $(OUT)
+	@#TODO ignore errors if not present
+	@-$(MAKE) all-post
 
 $(OUT): $(TMPS)
 	$(MYCXX) $(PROFILE_FLAGS) $^ -o "$@" $(LIBS)
@@ -89,6 +91,7 @@ test: all
 
 help:
 	@echo 'Compile all files with extension IN_EXT in directory IN_DIR into or into a single output file.'
+	@echo ''
 	@echo 'IN_EXT can be either of: `.cpp`, `.c` or `.f`. The compiler is chosen accordingly.'
 	@echo ''
 	@echo '# Most useful invocations'

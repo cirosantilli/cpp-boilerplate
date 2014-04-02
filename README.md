@@ -4,6 +4,14 @@ For a template which already has this installed as submodule use: <https://githu
 
 Intended usage: include as a submodule, and symlink into files you want to use, which can be automated with `./install`. See [Install](#install) for more details.
 
+Features:
+
+- feature rich Makefile
+- Vagrant
+- Travis CI
+- local `.vimrc`
+- many configuration options using external files
+
 #Usage from main project
 
 Clone the main project with the `--recursive` flag:
