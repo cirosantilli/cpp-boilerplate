@@ -15,7 +15,9 @@ MYCC					?= gcc
 MYCFLAGS				?= -std=c11   -Wall -pedantic-errors -march=native $(CFLAGS_EXTRA)
 MYCXX					?= g++
 MYCXXFLAGS				?= -std=c++11 -Wall -pedantic-errors -march=native $(CXXFLAGS_EXTRA)
-OPTIMIZE_FLAGS			?= -O3
+# Should be turned on for production.
+# For development leave off to compile faster and produce more predictable assembly code.
+OPTIMIZE_FLAGS			?= #-O3
 OUT_DIR 				?= ./
 OUT_BASENAME_NOEXT		?= main
 RUN						?= $(OUT_BASENAME_NOEXT)
