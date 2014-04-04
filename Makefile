@@ -2,13 +2,17 @@
 
 -include Makefile_params
 
-FF						?= gfortran
 DEBUG_DEFINE 			?=
 DEBUG_FLAGS 			?=
-# For -DDEBUG and -DPROFILE, used dedicated DEFINES
+# For -DDEBUG and -DPROFILE, used dedicated DEFINES, as these must be modified
+# separatedly for certain targets.
 DEFINES 				?= #-DPOSIX
+# Extension of the input to be compiled.
 IN_EXT 					?= .cpp
+# Directory where compilation input files (e.g. `.c` or `.cpp`) are found.
 IN_DIR 					?= ./
+# Fortran compiler.
+FF						?= gfortran
 INCLUDE_DIRS 			?= #-L/usr/include/GL
 LIBS 					?= #-lglut -lGLU -lGL
 MYCC					?= gcc
@@ -18,30 +22,34 @@ MYCXXFLAGS				?= -std=c++11 -Wall -pedantic-errors -march=native $(CXXFLAGS_EXTR
 # Should be turned on for production.
 # For development leave off to compile faster and produce more predictable assembly code.
 OPTIMIZE_FLAGS			?= #-O3
+# Directory where compiled outputs will be put.
 OUT_DIR 				?= ./
 OUT_BASENAME_NOEXT		?= main
-RUN						?= $(OUT_BASENAME_NOEXT)
 OUT_EXT 				?=
+RUN						?= $(OUT_BASENAME_NOEXT)
+# If this file or directory exists, it will be symlinked into the same directory
+# from which the executable will be run. This way, the executable can suppose this is in the current directory.
+RUN_INPUT				?= input
 PROFILE_DEFINE 			?=
 PROFILE_FLAGS 			?=
 PREDEF 					?= #-DDEBUG -DPROFILE -DWINDOWS
 # Passed as command line args to bin on run.
 RUN_ARGS 				?= #0 1
-# Basename without extension of the file to generate assembly code for:
 TMP_DIR 				?= _build/
 TMP_EXT 				?= .o
 
-INS 		:= $(wildcard $(IN_DIR)*$(IN_EXT))
-INS_NODIR 	:= $(notdir $(INS))
-TMPS_NODIR	:= $(INS_NODIR:$(IN_EXT)=$(TMP_EXT))
-TMPS		:= $(addprefix $(TMP_DIR),$(TMPS_NODIR))
-OUT_BASENAME:= $(OUT_BASENAME_NOEXT)$(OUT_EXT)
-OUT			:= $(OUT_DIR)$(OUT_BASENAME)
+INS 					:= $(wildcard $(IN_DIR)*$(IN_EXT))
+INS_NODIR 				:= $(notdir $(INS))
+TMPS_NODIR				:= $(INS_NODIR:$(IN_EXT)=$(TMP_EXT))
+TMPS					:= $(addprefix $(TMP_DIR),$(TMPS_NODIR))
+OUT_BASENAME			:= $(OUT_BASENAME_NOEXT)$(OUT_EXT)
+OUT						:= $(OUT_DIR)$(OUT_BASENAME)
 
 .PHONY: all all-post assembler clean debug set_debug_flags help mkdir profile set_profile_flags test
 
 all: mkdir $(OUT)
 	@#TODO ignore errors if not present
+	@if [ -e "$(RUN_INPUT)" ] && [ ! -e "$(OUT_DIR)$(RUN_INPUT)" ]; then ln -s ../$(RUN_INPUT) "$(OUT_DIR)$(RUN_INPUT)"; fi
 	@-$(MAKE) all-post
 
 $(OUT): $(TMPS)
