@@ -29,3 +29,6 @@ main
 *.tmp
 
 .vagrant
+
+# Python tests runners.
+*.pyc
