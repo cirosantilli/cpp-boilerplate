@@ -115,7 +115,8 @@ if __name__ == '__main__':
     try:
         test_io = imp.load_source('test_io', 'test_io.py')
     except IOError:
-        pass
+        print "No test_io.py file."
+        sys.exit(1)
     if test_io:
         os.chdir(sys.argv[1])
         program_path = os.path.abspath(sys.argv[2])
