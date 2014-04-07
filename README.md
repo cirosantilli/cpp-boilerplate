@@ -10,6 +10,7 @@ Features:
 - Vagrant
 - Travis CI
 - local `.vimrc`
+- IO test script
 - many configuration options using external files
 
 #Usage from main project
