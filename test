@@ -9,7 +9,7 @@ Outputs: stdout, stderr, and exit status.
 
 Use as:
 
-    ./test path_to_executable
+    ./test directory_of_executable basename_of_executable
 """
 
 import imp
