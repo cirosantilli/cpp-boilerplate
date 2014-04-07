@@ -92,9 +92,11 @@ set_profile_flags:
 	#$(eval OPTIMIZE_FLAGS := )
 
 run: all
+	@echo
 	cd $(OUT_DIR) && ./$(OUT_BASENAME) $(RUN_ARGS)
 
 test: all
+	@echo
 	if [ -x test ]; then ./test $(OUT_DIR) $(OUT_BASENAME); else $(MAKE) run && echo 'All tests passed.'; fi
 
 -include Makefile_targets

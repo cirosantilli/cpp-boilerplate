@@ -15,6 +15,7 @@ Use as:
 import imp
 import subprocess
 import sys
+import os
 
 class Input:
     """
@@ -74,7 +75,7 @@ class IO:
 
     Has many creation default parameters so that the least used parameters do not need to be specified.
     """
-    def __init__(self, name, stdin, stdout, args = [], stderr = '', exit_status = 0):
+    def __init__(self, name, stdin="", stdout="", args = [], stderr = "", exit_status = 0):
         self.name = name
         self.input = Input(stdin, args)
         self.output_expected = Output(stdout, stderr, exit_status)
@@ -116,7 +117,8 @@ if __name__ == '__main__':
     except IOError:
         pass
     if test_io:
-        program_path = sys.argv[1]
+        os.chdir(sys.argv[1])
+        program_path = os.path.abspath(sys.argv[2])
         errors = []
         for inout in test_io.inouts:
             error = IO(*inout).run(program_path)
@@ -127,4 +129,7 @@ if __name__ == '__main__':
                 sys.stdout.write('.')
             sys.stdout.flush()
         print "\n"
-        print "\n\n".join(errors)
+        if errors:
+            print "\n\n".join(errors)
+        else:
+            print "All tests passed."
