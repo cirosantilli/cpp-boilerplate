@@ -1,4 +1,4 @@
-function! RedirStdoutNewTabSingle(cmd)
+function! b:RedirStdoutNewTabSingle(cmd)
 	tabnext
 	if expand('%:p') != ""
 		tabprevious
@@ -12,9 +12,9 @@ function! RedirStdoutNewTabSingle(cmd)
 	set nomodified
 endfunction
 
-function! MapAllBuff(keys, rhs)
-    exe 'noremap <buffer>' a:keys a:rhs
-    exe 'noremap! <buffer>' a:keys '<ESC>'.a:rhs
+function! b:MapAllBuff(keys, rhs)
+    execute 'noremap <buffer>' a:keys a:rhs
+    execute 'noremap! <buffer>' a:keys '<ESC>'.a:rhs
 endfunction
 
 call MapAllBuff('<F5>', ':w<CR>:make<CR>')
