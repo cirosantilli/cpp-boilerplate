@@ -28,6 +28,9 @@ main
 # Temporary files
 *.tmp
 
+core
+core.*
+
 .vagrant
 
 # Python tests runners.

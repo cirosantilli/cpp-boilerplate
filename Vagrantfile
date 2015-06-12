@@ -17,17 +17,17 @@ begin
   box_url = BoxUrl
   hostname = Hostname
 rescue LoadError
-  box = "precise32"
-  box_url = "http://files.vagrantup.com/precise32.box"
+  box = 'precise32'
+  box_url = 'http://files.vagrantup.com/precise32.box'
   hostname = 'vagrant-template'
 end
 
-Vagrant.configure("2") do |config|
+Vagrant.configure('2') do |config|
   config.vm.box = box
   config.vm.box_url = box_url
   config.vm.hostname = hostname
   config.vm.network :forwarded_port, guest: 4000, host: 4000
-  config.vm.provider "virtualbox" do |v|
+  config.vm.provider 'virtualbox' do |v|
     v.customize [
       'modifyvm', :id,
       '--cpus', cpus,
@@ -35,7 +35,7 @@ Vagrant.configure("2") do |config|
       '--name', hostname + '_vagrant'
     ]
     if cpus.to_i > 1
-      v.customize ["modifyvm", :id, "--ioapic", "on"]
+      v.customize ['modifyvm', :id, '--ioapic', 'on']
     end
   end
   config.vm.provision :shell, path: 'configure'
